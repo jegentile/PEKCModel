@@ -1,21 +1,28 @@
 __author__ = 'jgentile'
 import json
+import population_generator
 
 import agent
 
 class Model:
     def __init__(self,parameter_filename):
-        self.__timestep = 0
+        """
+        Instantiates a model class given the path and name of a parameter file. The paramters are provided in JSON
+        format. Please refer to the README file for a complete list of parameters.
+        """
 
+        # Import the parameter data structure
         f = open(parameter_filename)
         if not f:
             print 'Error, could not open parameter file:', parameter_filename
 
+        #
         self.__parameters = json.load(f)
-        print self.__parameters['number_of_agents']
+        self.__pop_gen = population_generator.PopulationGenerator(self.__parameters['population_generator'],self)
+        self.__agents = self.__pop_gen.get_agent_list()
 
-        self.initialize_model()
-
+        # Initialize model attributes
+        self.__timestep = 0
         self.__government = 'Autocracy'
         self.__tax_rate = 0
 
@@ -24,7 +31,7 @@ class Model:
         self.__agents = []
         number_of_agents = int(self.__parameters['number_of_agents'])
         number_of_rich_agents = int(round(number_of_agents*self.__parameters['initial_proportion_of_rich_agents']))
-        
+
         rich_wealth = self.__parameters['rich_wealth']
         poor_wealth = self.__parameters['poor_wealth']
         savings_rate = self.__parameters['savings_rate']
@@ -50,7 +57,8 @@ class Model:
 
         savings_rate = self.__parameters['savings_rate']
 
-        for i in range(0,self.__parameters['number_of_agents']):
+        number_of_agents = len(self.__agents)
+        for i in range(0,number_of_agents):
             new_agents.append(agent.Agent(
                 self,
                 self.__agents[i].get_classification(),

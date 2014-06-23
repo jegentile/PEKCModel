@@ -1,15 +1,16 @@
 {
     "number_of_timesteps": 100,
-    "initial_proportion_of_rich_agents": 0.1,
-    "number_of_agents": 100,
     "formal_sector_productivity": 1.2,
     "informal_sector_productivity": 1.1,
     "savings_rate":0.9,
     "offspring_human_capital_parameter":1.1,
     "offspring_human_capital_exponent":1.0,
     "proportion_of_economy_remaining_after_revolution":0.2,
-    "rich_wealth": 1000,
-    "poor_wealth": 100,
-    "savings_rate": 0.2
-
+    "population_generator":{
+        "type":"proportion",
+        "number_of_agents": 100,
+        "initial_proportion_of_rich_agents": 0.1,
+        "rich_wealth": 1000,
+        "poor_wealth": 100
+    }
 }

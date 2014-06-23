@@ -2,7 +2,7 @@ __author__ = 'jgentile'
 
 
 import sys
-import peck_model
+import pekc_model
 
 def main():
 
@@ -13,7 +13,7 @@ def main():
     parameter_filename = sys.argv[1]
     print parameter_filename
 
-    m = peck_model.Model(parameter_filename)
+    m = pekc_model.Model(parameter_filename)
 
     m.run()
 
