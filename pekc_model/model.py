@@ -27,9 +27,7 @@ class Model:
         self.__government = 'Autocracy'
         self.__tax_rate = 0
 
-        if self.check_assumptions() == True:
-            return 1
-        else:
+        if self.check_assumptions() == False:
             exit()
 
     def update(self):
@@ -114,11 +112,13 @@ class Model:
         rich_wealth = 0
         poor_wealth = 0
         for i in self.__agents:
+         #   print i.get_wealth()
             if i.get_classification() == 'poor':
                 poor_wealth += i.get_wealth()
             else:
                 rich_wealth += i.get_wealth()
         # 2
+        #print 'R:',rich_wealth,'P:',poor_wealth
         inequality = rich_wealth/poor_wealth
         # 3
         revolution_constraint = (1-self.__parameters['proportion_of_economy_remaining_after_revolution'])/self.__parameters['proportion_of_economy_remaining_after_revolution']
@@ -144,7 +144,7 @@ class Model:
             else:
                 rich_wealth += i.get_wealth()
 
-        print time,') Rich:',rich_wealth,'Poor',poor_wealth,self.__government
+        print time,') Rich:',rich_wealth,'Poor',poor_wealth,self.__government,'transfer',self.get_transfer()
 
 
     def check_assumptions(self):
@@ -212,17 +212,11 @@ class Model:
             print  '\t',params['offspring_human_capital_exponent'],' < 1 is False'
             contradiction_is_present = True
 
-
-
-
-
         if number_of_rich < 1:
             print 'Error: There must be at least one rich agent:'
             print '\tNumber_of_rich >= 1'
             print  '\t',number_of_rich, '>= 1 is False'
             contradiction_is_present = True
-
-
 
         # Formal sector > Informal Sector
         if params['formal_sector_productivity'] < params['informal_sector_productivity']:
@@ -231,10 +225,7 @@ class Model:
             print  '\t',params['formal_sector_productivity'], '<', params['informal_sector_productivity'],'is False'
             contradiction_is_present = True
 
-
-
         # Zero bequest assumption:
-
         if params['savings_rate']*params['formal_sector_productivity'] > 1:
             print 'Error: Parameters are in violation of the zero-bequest assumption:'
             print '\tsavings_rate * formal_sector_productivity < 1'

@@ -13,7 +13,7 @@ class Agent:
 
     def __repr__(self):
         # Printer operator
-        return self.__classification
+        return '['+str(self.__classification)+','+str(self.__wealth)+']'
 
     def get_formal_production(self):
         # Returns the formal production as the productivity times the agent's wealth
@@ -68,9 +68,6 @@ class Agent:
 
         pass_on_wealth = self.__model.get_parameter('offspring_human_capital_parameter')*math.pow(self.__savings,self.__model.get_parameter('offspring_human_capital_exponent'))
 
-
-        if self.__model.get_tax_rate() == 0:
-            return 0
 
         if pass_on_wealth < 1:
             return 1
