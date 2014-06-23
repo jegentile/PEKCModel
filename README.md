@@ -31,6 +31,6 @@ The population can be generated from one of any population generator
 of rich agents
 - type = 'proportion'
 - number_of_agents - the total number of agents
-- initial_proportion_of_rich_agents - proportion of rich agents (lamda)
+- initial_proportion_of_rich_agents - proportion of rich agents (lambda)
 - rich_wealth - initial wealth of the rich (h^r)
 - poor_wealth - initial wealth of the poor (h^p)
