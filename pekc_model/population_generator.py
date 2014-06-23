@@ -16,6 +16,3 @@ class PopulationGenerator:
 
     def get_agent_list(self):
         return self.__agents
-
-
-

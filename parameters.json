@@ -2,7 +2,7 @@
     "number_of_timesteps": 100,
     "formal_sector_productivity": 1.2,
     "informal_sector_productivity": 1.1,
-    "savings_rate":0.9,
+    "savings_rate":0.8,
     "offspring_human_capital_parameter":1.1,
     "offspring_human_capital_exponent":1.0,
     "proportion_of_economy_remaining_after_revolution":0.2,

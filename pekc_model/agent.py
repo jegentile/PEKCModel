@@ -31,7 +31,7 @@ class Agent:
         # 1
         if self.__wealth < 1:
             self.__wealth = 1
-        # 2
+            # 2
         self.__gross_income = self.__model.get_parameter("formal_sector_productivity")*self.__wealth
         # 3
         self.__post_tax_income = (1-self.__model.get_tax_rate())*self.__gross_income+self.__model.get_transfer()
@@ -41,7 +41,7 @@ class Agent:
         if self.__savings <= 1:
             self.__savings = 0
 
-        #print 'Agent',self.__classification,self.__gross_income,self.__post_tax_income
+            #print 'Agent',self.__classification,self.__gross_income,self.__post_tax_income
 
     def mate(self):
         """
@@ -65,5 +65,14 @@ class Agent:
 
     def pass_wealth(self):
         # Returns wealth that is passed to progeny.
-        return self.__model.get_parameter('offspring_human_capital_parameter')*math.pow(self.__savings,self.__model.get_parameter('offspring_human_capital_exponent'))
 
+        pass_on_wealth = self.__model.get_parameter('offspring_human_capital_parameter')*math.pow(self.__savings,self.__model.get_parameter('offspring_human_capital_exponent'))
+
+
+        if self.__model.get_tax_rate() == 0:
+            return 0
+
+        if pass_on_wealth < 1:
+            return 1
+        else:
+            return pass_on_wealth
