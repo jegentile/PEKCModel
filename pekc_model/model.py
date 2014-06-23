@@ -26,37 +26,28 @@ class Model:
         self.__government = 'Autocracy'
         self.__tax_rate = 0
 
-
-    def initialize_model(self):
-        self.__agents = []
-        number_of_agents = int(self.__parameters['number_of_agents'])
-        number_of_rich_agents = int(round(number_of_agents*self.__parameters['initial_proportion_of_rich_agents']))
-
-        rich_wealth = self.__parameters['rich_wealth']
-        poor_wealth = self.__parameters['poor_wealth']
-        savings_rate = self.__parameters['savings_rate']
-
-
-        for i in range(0,number_of_agents):
-            if i < number_of_rich_agents:
-                self.__agents.append(agent.Agent(self,'rich',rich_wealth,savings_rate))
-            else:
-                self.__agents.append(agent.Agent(self,'poor',poor_wealth,savings_rate))
-
-        print self.__agents
-
     def update(self):
+        """
+        This method is called for every heartbeat of the simulation. The steps are
+        1) Update the regime (decide between autocracy or democracy)
+        2) Set the transfer for each agent (amount of benefits distributed by taxes)
+        3) Update the current agents
+        4) For every current agent, make a new agent and pass wealth from parent to progeny
+        """
 
+        # 1
         self.set_regime()
 
+        # 2
         self.set_transfer()
         new_agents = []
 
+        # 3
         for a in self.__agents:
             a.update()
 
+        # 4
         savings_rate = self.__parameters['savings_rate']
-
         number_of_agents = len(self.__agents)
         for i in range(0,number_of_agents):
             new_agents.append(agent.Agent(
@@ -70,12 +61,18 @@ class Model:
 
 
     def run(self):
+        """
+        Run the simulation starting at timestep zero up to the number of timesteps specified in the parameter
+        """
         for i in range(0,self.__parameters['number_of_timesteps']):
             self.update()
             self.report(i)
 
 
     def get_parameter(self,name):
+        """
+        Returns the value of the parameter with name 'name'.
+        """
         return self.__parameters[name]
 
     def get_tax_rate(self):
@@ -85,16 +82,29 @@ class Model:
         return self.__transfer
 
     def set_transfer(self):
+        """
+        Calculates the agent-wise transfer by gathering taxes and calculating a per-agent share of the transfer
+        """
 
         total_formal_production = 0
+        # For every agent, get its formal production
         for i in self.__agents:
             total_formal_production += i.get_formal_production()
 
+        # Calculate the transfer as the tax rate times total formal production divided by the number of agents
         self.__transfer = self.__tax_rate*total_formal_production/len(self.__agents)
 
 
     def set_regime(self):
+        """
+        Determine the regime (autocracy of democracy) for this timestep by
+        1) Calculate the rich and poor wealth
+        2) Calculate inequality by dividing the rich's wealth by the poor's wealth
+        3) Calculate the revolution constraint
+        3) Determine if inequality is greater than the revolution constraint. If it is, set the government and tax rate
+        """
 
+        # 1
         rich_wealth = 0
         poor_wealth = 0
         for i in self.__agents:
@@ -102,16 +112,24 @@ class Model:
                 poor_wealth += i.get_wealth()
             else:
                 rich_wealth += i.get_wealth()
-
+        # 2
         inequality = rich_wealth/poor_wealth
+        # 3
         revolution_constraint = (1-self.__parameters['proportion_of_economy_remaining_after_revolution'])/self.__parameters['proportion_of_economy_remaining_after_revolution']
-
+        # 4
         if inequality > revolution_constraint:
             self.__government = 'Democracy'
             self.__tax_rate = (self.__parameters['formal_sector_productivity']-self.__parameters['informal_sector_productivity'])/self.__parameters['formal_sector_productivity']
 
 
     def report(self,time):
+        """
+        Reports the time-step information for the simulation given the enumerated timestep (i)
+        The output is
+
+        time_step) aggregate_rich_wealth aggregate_poor_wealth government_type
+        """
+
         rich_wealth = 0
         poor_wealth = 0
         for i in self.__agents:
