@@ -7,7 +7,7 @@ in parameters.json.
 To execute, the command is: python main.py parameters.json
 
 Parameters
--------------
+==========
 
 The model is parameterized with an object described in a JSON file. This section outlines the required fields and their meaning.
 
@@ -20,6 +20,7 @@ The model is parameterized with an object described in a JSON file. This section
 - offspring_human_capital_exponent - exponent for next-generation human capital (beta)
 - proportion_of_economy_remaining_after_revolution- the proportion of the economy that exists after a revolution (mu)
 - population_generator - object that describes the population for the given simulation
+- progenty_generator - object describing how wealth is passed from one generation to the next
 
 
 Population Generation
@@ -34,3 +35,12 @@ of rich agents
 - initial_proportion_of_rich_agents - proportion of rich agents (lambda)
 - rich_wealth - initial wealth of the rich (h^r)
 - poor_wealth - initial wealth of the poor (h^p)
+
+
+Progeny Generation
+------------------
+
+These objects describe how wealth is passed from one generation to another
+
+1) One-to-one progeny generator (type = 'one_to_one') is where one parent passes all its wealth to one progeny
+- type = 'one_to_one'
