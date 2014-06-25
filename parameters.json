@@ -12,5 +12,9 @@
         "initial_proportion_of_rich_agents": 0.2,
         "rich_wealth": 5,
         "poor_wealth": 1
+    },
+    "progeny_generator":{
+        "type":"one_to_one"
     }
+
 }

@@ -1,8 +1,8 @@
 __author__ = 'jgentile'
 import json
 import population_generator
+import progeny_generator
 
-import agent
 import sys
 
 class Model:
@@ -21,6 +21,7 @@ class Model:
         self.__parameters = json.load(f)
         self.__pop_gen = population_generator.PopulationGenerator(self.__parameters['population_generator'],self)
         self.__agents = self.__pop_gen.get_agent_list()
+        self.__progeny_generator = progeny_generator.ProgenyGenerator(self.__parameters['progeny_generator'],self)
 
         # Initialize model attributes
         self.__timestep = 0
@@ -42,25 +43,17 @@ class Model:
         # 1
         self.set_regime()
 
+
+
         # 2
         self.set_transfer()
-        new_agents = []
 
         # 3
         for a in self.__agents:
             a.update()
 
         # 4
-        savings_rate = self.__parameters['savings_rate']
-        number_of_agents = len(self.__agents)
-        for i in range(0,number_of_agents):
-            new_agents.append(agent.Agent(
-                self,
-                self.__agents[i].get_classification(),
-                self.__agents[i].pass_wealth(),
-                savings_rate))
-        self.__agents = new_agents
-
+        self.__agents = self.__progeny_generator.make_next_generation()
 
 
 
@@ -81,6 +74,9 @@ class Model:
 
     def get_tax_rate(self):
         return self.__tax_rate
+
+    def get_agents(self):
+        return self.__agents
 
     def get_transfer(self):
         return self.__transfer
