@@ -14,5 +14,11 @@ class PopulationGenerator:
             self.__generator = population_generators.ProportionGenerator(params,model)
             self.__agents = self.__generator.get_agents()
 
+        if(params['type'] == 'pareto'):
+            self.__generator = population_generators.ParetoGenerator(params,model)
+            self.__agents = self.__generator.get_agents()
+
+
+
     def get_agent_list(self):
         return self.__agents

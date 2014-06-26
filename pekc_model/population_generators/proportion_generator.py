@@ -5,6 +5,7 @@ from pekc_model import agent
 class ProportionGenerator:
     def __init__(self,params,model):
 
+
         self.__agents = []
 
         self.__number_of_agents = params['number_of_agents']

@@ -56,14 +56,21 @@ class Marriage:
             male_wealth = i[0].pass_wealth()
             female_wealth = i[1].pass_wealth()
 
+            poverty_line = 1/(self.__model.get_parameter('savings_rate')*self.__model.get_parameter('formal_sector_productivity'))
+
+            wealth = (male_wealth+female_wealth)/2
+            classification = 'rich'
+            if wealth < poverty_line:
+                classification = 'poor'
+
             new_agents.append(agent.Agent(
                 self.__model,
-                i[0].get_classification(),
+                classification,
                 (male_wealth+female_wealth)/2,
                 savings_rate))
             new_agents.append(agent.Agent(
                 self.__model,
-                i[1].get_classification(),
+                classification,
                 (male_wealth+female_wealth)/2,
                 savings_rate))
 

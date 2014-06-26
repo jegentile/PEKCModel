@@ -7,14 +7,15 @@
     "offspring_human_capital_exponent":0.9,
     "proportion_of_economy_remaining_after_revolution":0.4,
     "population_generator":{
-        "type":"proportion",
-        "number_of_agents": 10,
-        "initial_proportion_of_rich_agents": 0.2,
-        "rich_wealth": 5,
-        "poor_wealth": 1
+        "type":"pareto",
+        "number_of_agents": 1000,
+        "dist_a":3,
+        "dist_m":0.5
+
     },
+
     "progeny_generator":{
-        "type":"marriage",
+        "type":"one_to_one",
         "preference":1.0
     }
 
