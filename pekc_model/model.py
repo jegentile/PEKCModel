@@ -43,8 +43,6 @@ class Model:
         # 1
         self.set_regime()
 
-
-
         # 2
         self.set_transfer()
 
