@@ -73,3 +73,12 @@ class Agent:
             return 1
         else:
             return pass_on_wealth
+
+    def __ge__(self, other):
+        return self.get_wealth() >= other.get_wealth()
+
+    def __le__(self, other):
+        return self.get_wealth() <= other.get_wealth()
+
+    def __eq__(self, other):
+        return self.get_wealth() == other.get_wealth()

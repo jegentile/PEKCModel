@@ -9,8 +9,12 @@ class ProgenyGenerator:
 
         if params['type']=='one_to_one':
             self.__generator = progeny_generators.OneToOne(params,model)
-        if params['type']=='marriage':
-            self.__generator = progeny_generators.Marriage(params,model)
+        if params['type']=='random_marriange':
+            self.__generator = progeny_generators.RandomMarriage(params,model)
+        if params['type']=='assortative':
+            self.__generator = progeny_generators.AssortativeMating(params,model)
+
+
 
     def make_next_generation(self):
         return self.__generator.make_next_generation()

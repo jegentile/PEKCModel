@@ -38,7 +38,7 @@ class AssortativeMating:
                         mate = poor_agents.pop()
                 else:
                     # If the agent has no preference, randomly draw a mate as rich or poor
-                    
+
                     if len(poor_agents):
                         draw = len(rich_agents)/len(poor_agents)
                     else:

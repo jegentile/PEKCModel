@@ -105,12 +105,19 @@ class Model:
         # 1
         rich_wealth = 0
         poor_wealth = 0
+        num_poor = 0
         for i in self.__agents:
          #   print i.get_wealth()
             if i.get_classification() == 'poor':
                 poor_wealth += i.get_wealth()
+                num_poor += 1
             else:
                 rich_wealth += i.get_wealth()
+
+        if num_poor == 0:
+            print 'No more poor'
+            exit()
+
         # 2
         #print 'R:',rich_wealth,'P:',poor_wealth
         inequality = rich_wealth/poor_wealth
@@ -130,8 +137,10 @@ class Model:
         time_step) aggregate_rich_wealth aggregate_poor_wealth government_type
         """
 
+
         rich_wealth = 0
         poor_wealth = 0
+        num_poor = 0
         for i in self.__agents:
             if i.get_classification() == 'poor':
                 poor_wealth += i.get_wealth()
@@ -160,6 +169,10 @@ class Model:
                 number_of_poor +=1
                 if i.get_wealth() > maximum_poor:
                     maximum_poor = i.get_wealth()
+
+        if number_of_poor == 0:
+            print "No more poor"
+            exit()
 
         if number_of_rich > number_of_poor:
             print 'Error: Rich outnumber the poor:'

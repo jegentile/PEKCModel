@@ -3,7 +3,7 @@ __author__ = 'jgentile'
 import random
 from pekc_model import agent
 
-class Marriage:
+class RandomMarriage:
     def __init__(self,params,model):
         self.__preference = params['preference']
         self.__model = model

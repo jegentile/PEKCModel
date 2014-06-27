@@ -19,6 +19,9 @@ class PopulationGenerator:
             self.__agents = self.__generator.get_agents()
 
 
+        if(params['type'] == 'lorenz'):
+            self.__generator = population_generators.LorenzCurveGenerator(params,model)
+            self.__agents = self.__generator.get_agents()
 
     def get_agent_list(self):
         return self.__agents
