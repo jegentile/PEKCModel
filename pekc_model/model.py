@@ -110,8 +110,12 @@ class Model:
         rich_wealth = 0
         poor_wealth = 0
         num_poor = 0
+
         for i in self.__agents:
          #   print i.get_wealth()
+
+
+
             if i.get_classification() == 'poor':
                 poor_wealth += i.get_wealth()
                 num_poor += 1
@@ -122,21 +126,39 @@ class Model:
             print 'No more poor'
             exit()
 
-        sorted_agents = []
+        sorted_agents_post_tax_income = []
+        sorted_agents_wealth = []
         total_income = 0
         poor_agents = []
 
+
         for i in self.__agents:
-            bisect.insort(sorted_agents,i.get_post_tax_income())
+            bisect.insort(sorted_agents_post_tax_income,i.get_post_tax_income())
+            bisect.insort(sorted_agents_wealth,i.get_wealth())
             total_income += i.get_post_tax_income()
             if i.get_classification() == 'poor':
                 bisect.insort(poor_agents,i.get_post_tax_income())
 
 
-        if len(sorted_agents) % 2 == 0:
-            median_income = (sorted_agents[int(0.25*len(sorted_agents)/2)]+sorted_agents[int(0.25*len(sorted_agents)/2)+1])/2
+        if len(sorted_agents_post_tax_income) % 2 == 0:
+            median_income = (sorted_agents_post_tax_income[int(0.25*len(sorted_agents_post_tax_income)/2)]+sorted_agents_post_tax_income[int(0.25*len(sorted_agents_post_tax_income)/2)+1])/2
         else:
-            median_income = sorted_agents[int(len(sorted_agents)/2)]
+            median_income = sorted_agents_post_tax_income[int(len(sorted_agents_post_tax_income)/2)]
+
+        self.__Gini = 0
+        index = 1
+        number_of_agents = len(self.__agents)
+
+        for i in sorted_agents_post_tax_income:
+            self.__Gini += (2*index-number_of_agents-1)*i
+            index+=1
+
+
+
+        self.__Gini = self.__Gini/(number_of_agents*total_income)
+
+        self.__inequality = rich_wealth/poor_wealth
+
 
         # 2
         #print 'R:',rich_wealth,'P:',poor_wealth
@@ -156,11 +178,27 @@ class Model:
         if richest_poor_agents_potential > richest_poor_agents_income:
             self.__government = 'Democracy'
 
+
+        #print "meadian income:",median_income,"average_income",total_income / len(sorted_agents_post_tax_income)
+
         if self.__government == 'Democracy':
-            if median_income > total_income / len(sorted_agents):
+            if median_income > total_income / len(sorted_agents_post_tax_income):
                 self.__tax_rate = 0
             else:
                 self.__tax_rate = (self.__parameters['formal_sector_productivity']-self.__parameters['informal_sector_productivity'])/self.__parameters['formal_sector_productivity']
+
+        Z = self.__parameters['offspring_human_capital_parameter']
+        beta = self.__parameters['offspring_human_capital_exponent']
+        gamma = self.__parameters['savings_rate']
+        A = self.__parameters['formal_sector_productivity']
+
+
+        h_ss =(  Z*(gamma*A)**(beta) )**(1/(1-beta))
+
+        if sorted_agents_wealth[len(sorted_agents_wealth)-1] > h_ss:
+            print "Error: richest agent's wealth is greater than steady_state"
+            print sorted_agents_wealth[len(sorted_agents_wealth)-1],">",h_ss,'is False'
+            exit()
 
 
 
@@ -182,8 +220,8 @@ class Model:
             else:
                 rich_wealth += i.get_wealth()
 
-        print time,') Rich:',rich_wealth,'Poor',poor_wealth,self.__government,'transfer',self.get_transfer()
-
+        #print time,') Rich:',rich_wealth,'Poor',poor_wealth,self.__government,'transfer',self.get_transfer()
+        print time,') Rich:',rich_wealth,'Poor',poor_wealth,self.__government,'transfer',self.get_transfer(),'g',self.__Gini,self.__inequality
 
     def check_assumptions(self):
         params = self.__parameters
@@ -298,6 +336,7 @@ class Model:
             return False
         else:
             return True
+
 
 
 

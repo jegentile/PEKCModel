@@ -10,7 +10,7 @@ class Agent:
             print "Error: Agent instantiated with welath < 1."
             exit()
 
-            
+
         self.__classification = classification
         self.__model = model
         self.__wealth = wealth
@@ -31,7 +31,7 @@ class Agent:
         2) Calculate gross income as formal sectory productivity times __wealth
         3) Calculate the post-tax income as one minus the tax rate times gross income plus the transfer received by the gov't
         4) Calculate the savings as post-tax income time the savings rate
-        5) Impose a saving's cponstraint
+        5) Impose a saving's constraint
         """
         # 1
         if self.__wealth < 1:
