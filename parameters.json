@@ -8,14 +8,14 @@
     "proportion_of_economy_remaining_after_revolution":0.72,
     "population_generator":{
         "type":"lorenz",
-        "number_of_agents": 10,
+        "number_of_agents": 100,
         "delta":0.2,
         "total_wealth":100
     },
 
     "progeny_generator":{
         "type":"assortative",
-        "preference":0.8
+        "preference":1.0
     }
 
 }

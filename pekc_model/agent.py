@@ -6,6 +6,11 @@ class Agent:
         """
         Constructor for the model's agent given the model, classification (rich/poor), wealth, and savings rate
         """
+        if wealth < 0.1:
+            print "Error: Agent instantiated with welath < 1."
+            exit()
+
+            
         self.__classification = classification
         self.__model = model
         self.__wealth = wealth
@@ -42,6 +47,9 @@ class Agent:
             self.__savings = 0
 
             #print 'Agent',self.__classification,self.__gross_income,self.__post_tax_income
+
+    def get_post_tax_income(self):
+        return self.__post_tax_income
 
     def mate(self):
         """

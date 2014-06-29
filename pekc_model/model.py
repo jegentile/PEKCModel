@@ -2,6 +2,7 @@ __author__ = 'jgentile'
 import json
 import population_generator
 import progeny_generator
+import bisect
 
 import sys
 
@@ -27,6 +28,7 @@ class Model:
         self.__timestep = 0
         self.__government = 'Autocracy'
         self.__tax_rate = 0
+        self.__transfer = 0
 
         if self.check_assumptions() == False:
             exit()
@@ -34,21 +36,22 @@ class Model:
     def update(self):
         """
         This method is called for every heartbeat of the simulation. The steps are
-        1) Update the regime (decide between autocracy or democracy)
-        2) Set the transfer for each agent (amount of benefits distributed by taxes)
-        3) Update the current agents
+        1) Update the current agents
+        2) Update the regime (decide between autocracy or democracy)
+        3) Set the transfer for each agent (amount of benefits distributed by taxes)
         4) For every current agent, make a new agent and pass wealth from parent to progeny
         """
 
+
         # 1
-        self.set_regime()
-
-        # 2
-        self.set_transfer()
-
-        # 3
         for a in self.__agents:
             a.update()
+
+        # 2
+        self.set_regime()
+
+        # 3
+        self.set_transfer()
 
         # 4
         self.__agents = self.__progeny_generator.make_next_generation()
@@ -60,6 +63,7 @@ class Model:
         Run the simulation starting at timestep zero up to the number of timesteps specified in the parameter
         """
         for i in range(0,self.__parameters['number_of_timesteps']):
+            self.__timestep = i
             self.update()
             self.report(i)
 
@@ -118,15 +122,46 @@ class Model:
             print 'No more poor'
             exit()
 
+        sorted_agents = []
+        total_income = 0
+        poor_agents = []
+
+        for i in self.__agents:
+            bisect.insort(sorted_agents,i.get_post_tax_income())
+            total_income += i.get_post_tax_income()
+            if i.get_classification() == 'poor':
+                bisect.insort(poor_agents,i.get_post_tax_income())
+
+
+        if len(sorted_agents) % 2 == 0:
+            median_income = (sorted_agents[int(0.25*len(sorted_agents)/2)]+sorted_agents[int(0.25*len(sorted_agents)/2)+1])/2
+        else:
+            median_income = sorted_agents[int(len(sorted_agents)/2)]
+
         # 2
         #print 'R:',rich_wealth,'P:',poor_wealth
         inequality = rich_wealth/poor_wealth
         # 3
-        revolution_constraint = (1-self.__parameters['proportion_of_economy_remaining_after_revolution'])/self.__parameters['proportion_of_economy_remaining_after_revolution']
-        # 4
-        if inequality > revolution_constraint:
+
+        richest_poor_agents_income = poor_agents[len(poor_agents)-1]
+        mu = self.__parameters['proportion_of_economy_remaining_after_revolution']
+        A = self.__parameters['formal_sector_productivity']
+        H_t = rich_wealth+poor_wealth
+        N_p = len(poor_agents)
+
+        richest_poor_agents_potential = mu*A*H_t/N_p
+
+
+
+        if richest_poor_agents_potential > richest_poor_agents_income:
             self.__government = 'Democracy'
-            self.__tax_rate = (self.__parameters['formal_sector_productivity']-self.__parameters['informal_sector_productivity'])/self.__parameters['formal_sector_productivity']
+
+        if self.__government == 'Democracy':
+            if median_income > total_income / len(sorted_agents):
+                self.__tax_rate = 0
+            else:
+                self.__tax_rate = (self.__parameters['formal_sector_productivity']-self.__parameters['informal_sector_productivity'])/self.__parameters['formal_sector_productivity']
+
 
 
     def report(self,time):
