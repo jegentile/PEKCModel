@@ -15,7 +15,7 @@
     },
 
     "progeny_generator":{
-        "type":"marriage",
+        "type":"assortative",
         "preference":1.0
     }
 

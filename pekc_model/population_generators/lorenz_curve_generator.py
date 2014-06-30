@@ -34,7 +34,7 @@ class LorenzCurveGenerator:
 
 
 
-        print self.__agents
+        #print self.__agents
 
 
 

@@ -7,19 +7,31 @@ import bisect
 import sys
 
 class Model:
-    def __init__(self,parameter_filename):
+    def __init__(self,parameters,preface,outputfile):
         """
         Instantiates a model class given the path and name of a parameter file. The paramters are provided in JSON
         format. Please refer to the README file for a complete list of parameters.
         """
 
+
         # Import the parameter data structure
-        f = open(parameter_filename)
-        if not f:
-            print 'Error, could not open parameter file:', parameter_filename
+        print type(parameters)
+
+        if type(parameters) is str:
+            print 'string'
+            f = open(parameters)
+            if not f:
+                print 'Error, could not open parameter file:', parameters
+            self.__parameters = json.load(f)
+
+        if type(parameters) is dict:
+            self.__parameters = parameters
+
+        self.__preface = preface
+        self.__output_file = outputfile
 
         #
-        self.__parameters = json.load(f)
+
         self.__pop_gen = population_generator.PopulationGenerator(self.__parameters['population_generator'],self)
         self.__agents = self.__pop_gen.get_agent_list()
         self.__progeny_generator = progeny_generator.ProgenyGenerator(self.__parameters['progeny_generator'],self)
@@ -29,6 +41,8 @@ class Model:
         self.__government = 'Autocracy'
         self.__tax_rate = 0
         self.__transfer = 0
+
+        self.__stop = False
 
         if self.check_assumptions() == False:
             exit()
@@ -66,6 +80,8 @@ class Model:
             self.__timestep = i
             self.update()
             self.report(i)
+            if self.__stop:
+                return
 
 
     def get_parameter(self,name):
@@ -124,7 +140,8 @@ class Model:
 
         if num_poor == 0:
             print 'No more poor'
-            exit()
+            self.__stop = True
+            return
 
         sorted_agents_post_tax_income = []
         sorted_agents_wealth = []
@@ -214,14 +231,19 @@ class Model:
         rich_wealth = 0
         poor_wealth = 0
         num_poor = 0
+        num_rich = 0
         for i in self.__agents:
             if i.get_classification() == 'poor':
                 poor_wealth += i.get_wealth()
+                num_poor += 1
             else:
                 rich_wealth += i.get_wealth()
+                num_rich += 1
 
         #print time,') Rich:',rich_wealth,'Poor',poor_wealth,self.__government,'transfer',self.get_transfer()
-        print time,') Rich:',rich_wealth,'Poor',poor_wealth,self.__government,'transfer',self.get_transfer(),'g',self.__Gini,self.__inequality
+
+        self.__output_file.write(self.__preface+','+str(time)+','+str(poor_wealth)+','+str(num_poor)+','+str(rich_wealth)+','+str(num_rich)+','+str(self.__inequality)+','+str(self.__Gini)+','+str(self.__government)+','+str(self.__transfer)+'\n')
+        #print self.__preface,',',time,',',poor_wealth,',',num_poor,',',rich_wealth,',',num_rich,',',self.__inequality,',',self.__Gini,',',self.__government
 
     def check_assumptions(self):
         params = self.__parameters
