@@ -25,7 +25,7 @@ def main():
     step = 0.1
     iteration = start
 
-    '''
+    
     while iteration <= stop:
 
         if iteration > 0.8:
@@ -42,7 +42,7 @@ def main():
             m.run()
 
         iteration += step
-    '''
+
     for i in range(0,20):
             preface = str(-1)+','+str(i)
             print 'one_to_one',',',i
