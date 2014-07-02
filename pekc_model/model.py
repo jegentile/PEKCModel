@@ -138,10 +138,10 @@ class Model:
             else:
                 rich_wealth += i.get_wealth()
 
-        if num_poor == 0:
-            print 'No more poor'
-            self.__stop = True
-            return
+        #if num_poor == 0:
+        #    print 'No more poor'
+        #    self.__stop = True
+        #    return
 
         sorted_agents_post_tax_income = []
         sorted_agents_wealth = []
@@ -158,7 +158,8 @@ class Model:
 
 
         if len(sorted_agents_post_tax_income) % 2 == 0:
-            median_income = (sorted_agents_post_tax_income[int(0.25*len(sorted_agents_post_tax_income)/2)]+sorted_agents_post_tax_income[int(0.25*len(sorted_agents_post_tax_income)/2)+1])/2
+            #median_income = (sorted_agents_post_tax_income[int(0.5*len(sorted_agents_post_tax_income)/2)]+sorted_agents_post_tax_income[int(0.25*len(sorted_agents_post_tax_income)/2)+1])/2
+            median_income = (sorted_agents_post_tax_income[int(len(sorted_agents_post_tax_income)/2)]+sorted_agents_post_tax_income[int(len(sorted_agents_post_tax_income)/2)+1])/2
         else:
             median_income = sorted_agents_post_tax_income[int(len(sorted_agents_post_tax_income)/2)]
 
@@ -174,26 +175,26 @@ class Model:
 
         self.__Gini = self.__Gini/(number_of_agents*total_income)
 
-        self.__inequality = rich_wealth/poor_wealth
+        #self.__inequality = rich_wealth/poor_wealth
 
 
         # 2
         #print 'R:',rich_wealth,'P:',poor_wealth
-        inequality = rich_wealth/poor_wealth
+        #inequality = rich_wealth/poor_wealth
         # 3
+        if self.__government != 'Democracy':
+            richest_poor_agents_income = poor_agents[len(poor_agents)-1]
+            mu = self.__parameters['proportion_of_economy_remaining_after_revolution']
+            A = self.__parameters['formal_sector_productivity']
+            H_t = rich_wealth+poor_wealth
+            N_p = len(poor_agents)
 
-        richest_poor_agents_income = poor_agents[len(poor_agents)-1]
-        mu = self.__parameters['proportion_of_economy_remaining_after_revolution']
-        A = self.__parameters['formal_sector_productivity']
-        H_t = rich_wealth+poor_wealth
-        N_p = len(poor_agents)
-
-        richest_poor_agents_potential = mu*A*H_t/N_p
+            richest_poor_agents_potential = mu*A*H_t/N_p
 
 
 
-        if richest_poor_agents_potential > richest_poor_agents_income:
-            self.__government = 'Democracy'
+            if richest_poor_agents_potential > richest_poor_agents_income:
+                self.__government = 'Democracy'
 
 
         #print "meadian income:",median_income,"average_income",total_income / len(sorted_agents_post_tax_income)
@@ -212,11 +213,12 @@ class Model:
 
         h_ss =(  Z*(gamma*A)**(beta) )**(1/(1-beta))
 
+        """
         if sorted_agents_wealth[len(sorted_agents_wealth)-1] > h_ss:
             print "Error: richest agent's wealth is greater than steady_state"
             print sorted_agents_wealth[len(sorted_agents_wealth)-1],">",h_ss,'is False'
-            exit()
-
+            #exit()
+"""
 
 
     def report(self,time):
@@ -242,7 +244,7 @@ class Model:
 
         #print time,') Rich:',rich_wealth,'Poor',poor_wealth,self.__government,'transfer',self.get_transfer()
 
-        self.__output_file.write(self.__preface+','+str(time)+','+str(poor_wealth)+','+str(num_poor)+','+str(rich_wealth)+','+str(num_rich)+','+str(self.__inequality)+','+str(self.__Gini)+','+str(self.__government)+','+str(self.__transfer)+'\n')
+        self.__output_file.write(self.__preface+','+str(time)+','+str(poor_wealth)+','+str(num_poor)+','+str(rich_wealth)+','+str(num_rich)+','+str(self.__Gini)+','+str(self.__government)+','+str(self.__transfer)+','+str(self.__tax_rate)+'\n')
         #print self.__preface,',',time,',',poor_wealth,',',num_poor,',',rich_wealth,',',num_rich,',',self.__inequality,',',self.__Gini,',',self.__government
 
     def check_assumptions(self):

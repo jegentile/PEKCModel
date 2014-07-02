@@ -20,23 +20,35 @@ def main():
     output_filename = sys.argv[2]
     output_file = open(output_filename,'w')
 
-    start = 0
-    stop = 1
+    start = 0.0
+    stop = 1.0
     step = 0.1
     iteration = start
 
+    '''
     while iteration <= stop:
+
+        if iteration > 0.8:
+            print 'here'
+            step = 0.01
 
 
         for i in range(0,20):
-            print iteration
+            print iteration,',',i,step
 
             preface = str(iteration)+','+str(i)
             parameters['progeny_generator']['preference'] = iteration
             m = pekc_model.Model(parameters,preface,output_file)
             m.run()
 
-        iteration +=step
+        iteration += step
+    '''
+    for i in range(0,20):
+            preface = str(-1)+','+str(i)
+            print 'one_to_one',',',i
+            parameters['progeny_generator']['type'] = 'one_to_one'
+            m = pekc_model.Model(parameters,preface,output_file)
+            m.run()
 
 
 
